@@ -10,7 +10,7 @@ function Card() {
         addToCard,
         removeFromCard
   */
-  const {cardItem,food_list,removeFromCard,getTotalCartAmount} = useContext(StoreContext)
+  const {cardItem,food_list,removeFromCard,getTotalCartAmount,url} = useContext(StoreContext)
   const navigate = useNavigate()
   return (
     <div className='cart'>
@@ -31,7 +31,7 @@ function Card() {
             return (
               <div>
  <div className='cart-items-title cart-items-item'>
-                <img src={item.image} alt="" />
+                <img src={`${url}/images/${item.image}`} alt="" />
                 <p>{item.name}</p>
                 <p>{item.price}</p>
                 <p>{cardItem[item._id]}</p>

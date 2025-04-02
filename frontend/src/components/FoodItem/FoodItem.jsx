@@ -3,11 +3,11 @@ import './FoodItem.css'
 import { assets } from '../../assets/assets'
 import { StoreContext } from '../../context/StoreContext'
 function FoodItem({id,name,price,description,image}) {
-    const {cardItem,addToCard,removeFromCard} = useContext(StoreContext)
+    const {cardItem,addToCard,removeFromCard,url} = useContext(StoreContext)
   return (
     <div className='food-item'>
             <div className="food-item-img-container">
-                <img className='food-item-image' src={image} alt="" />
+            <img className='food-item-image' src={`${url}/images/${image}`} alt="" />
                 {!cardItem[id]
                     ?<img className='add'  onClick={()=> addToCard(id)} src={assets.add_icon_white} />:
                     <div className='food-item-counter'>
