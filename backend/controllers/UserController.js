@@ -5,20 +5,21 @@ import validator from 'validator'
 //login user 
 export const loginUser = async (req,res)=>{
     const {email,password} = req.body
-    try{
+    try {
         const user = await UserModel.findOne({email})
         if(!user){
-            return res.json({success:false,message:"user doen't exists"})
+            return res.json({success:false,message:"user doesn't exists"})
         }
         const isMatch = await bcrypt.compare(password,user.password)
         if(!isMatch){
-            return res.json({success:false,message:"invalid credentials"})
+            return res.json({success:false,message:"invalid credintials"})
         }
         const token = createToken(user._id)
         res.json({success:true,token})
-    }catch(err){
-        console.log(err)
-        res.json({success:false,message:"error"})
+
+    } catch (error) {
+            console.log(error)
+            res.json({success:false,message:"err"})
     }
 }
 export const createToken = (id)=>{
@@ -26,34 +27,30 @@ export const createToken = (id)=>{
 }
 //register user
  export const registerUser = async (req,res)=>{
-    const {name,password,email} = req.body
+    const {name,email,password} = req.body
     try{
-        //verifica se tem usuario
         const exists = await UserModel.findOne({email})
         if(exists){
             return res.json({success:false,message:"user already exists"})
         }
-        //validating email format & strong passaword
         if(!validator.isEmail(email)){
-            return {success:false,message:"please enter a valid email"}
+            return res.json({success:false,message:"plase enter a vaid email"})
         }
-        if(password.length < 8){
-            return res.json({success:false,message:"please enter a strong password"})
+        if(password.length < 8 ){
+            return res.json({success:false,message:"please enter a strogg password"})
         }
-        //hasing user password
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password,salt)
-        const new_user = new UserModel({
+        const newUser = new UserModel({
             name:name,
             email:email,
-            password:hashedPassword
+            password:hashedPassword // tem que passar o brcpy para comparar no login nao a senha do usuario
         })
-        const user = await new_user.save()
-        const token = createToken(user._id)
-        res.json({success:true,token})
+      const user =   await newUser.save()
+      const token = createToken(user._id)
+      res.json({success:true,token})
     }catch(err){
         console.log(err)
         res.json({success:false,message:"error"})
-
     }
 }
