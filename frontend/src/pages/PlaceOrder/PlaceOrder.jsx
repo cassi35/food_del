@@ -1,8 +1,10 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useReducer, useState } from 'react'
 import './PlaceOrder.css'
 import { StoreContext } from '../../context/StoreContext'
+import axios from 'axios'
 function PlaceOrder() {
   const {getTotalCartAmount,token,food_list,cardItem,url} = useContext(StoreContext)
+ const frontend_url = 'http://localhost:5173'
   const [data,setData] = useState({
     firstName:"",
     lastName:"",
@@ -19,25 +21,51 @@ function PlaceOrder() {
     const value = event.target.value 
     setData(data => ({...data,[name]:value}))
   }
+  const placeOrder = async (event)=>{
+    event.preventDefault()
+    let orderItems = []
+    food_list.map((item) => {
+      if (cardItem[item._id] > 0) {
+        let itemInfo = item;
+        itemInfo["quantity"] = cardItem[item._id];
+        orderItems.push(itemInfo);
+      }
+    });
+   let orderData = {
+  address: data,
+  items: orderItems,
+  amount:getTotalCartAmount()+2 
+
+   }
+   let response = await axios.post(`${url}/api/order/place`,orderData,{headers:{token}})
+   if(response.data.success){
+   const {session_url} = response.data
+   window.location.replace(session_url)
+
+   }else{
+      alert("something went wrong")
+  }
+  }
+ 
   return (
-    <form action="" className='place-order'>
+    <form onSubmit={placeOrder} action="" className='place-order'>
       <div className="place-order-left">
         <p className='title'>delivery information</p>
         <div className="multi-fields">
           <input type="text" name='firstName' onChange={onChangleHandler} value={data.firstName} placeholder='first name' />
           <input type="text" name='lastName' onChange={onChangleHandler} value={data.lastName} placeholder='last name' />
         </div>
-        <input type="email" placeholder='email address ' />
-        <input type="text" placeholder='street' />
+        <input name='email' onChange={onChangleHandler} value={data.email}  type="email" placeholder='email address ' />
+        <input name='street' onChange={onChangleHandler} value={data.street} type="text" placeholder='street' />
         <div className="multi-fields">
-          <input type="text" placeholder='city' />
-          <input type="text" placeholder='state' />
+          <input name='city' onChange={onChangleHandler} value={data.city} type="text" placeholder='city' />
+          <input name='state' onChange={onChangleHandler} value={data.state} type="text" placeholder='state' />
         </div>
         <div className="multi-fields">
-          <input type="text" placeholder='zip code' />
-          <input type="text" placeholder='country' />
+          <input name='zipcode' onChange={onChangleHandler} value={data.zipcode} type="text" placeholder='zip code' />
+          <input name='country' onChange={onChangleHandler} value={data.country} type="text" placeholder='country' />
         </div>
-        <input type="text" placeholder='phone' />
+        <input name='phone' onChange={onChangleHandler} value={data.phone} type="text" placeholder='phone' />
       </div>
       <div className="place-order-right">
       <div className="cart-total">
@@ -58,7 +86,7 @@ function PlaceOrder() {
             <b>${getTotalCartAmount() == 0?0:getTotalCartAmount()+2}</b>
             </div>
           </div>
-            <button>proceed to payment</button>
+            <button type='submit' >proceed to payment</button>
         </div>
       </div>
     </form>

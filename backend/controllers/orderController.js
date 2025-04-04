@@ -49,3 +49,18 @@ try {
     res.json({success:false,message:'error'})
 }
 }
+export const verifyOrder = async (req,res)=>{
+    const {orderId,success} = req.body
+    try {
+        if(success == "true"){
+            await orderModel.findByIdAndUpdate(orderId,{payment:true})
+            res.json({success:true,message:"payment is completed"})
+        }else{
+            await orderModel.findByIdAndUpdate(orderId,{payment:false})
+            res.json({success:false,message:"payment is not completed"})
+        }
+    } catch (error) {
+        console.log(error)
+        res.json({success:false,message:"error"})
+    }
+}
