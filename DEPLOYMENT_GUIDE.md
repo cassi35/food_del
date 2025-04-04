@@ -1,163 +1,154 @@
-# Deployment Guide for Food Delivery Application
+# Guia de Deploy para o Projeto Food Delivery
 
-This guide will help you deploy both the frontend and backend of your food delivery application.
+Este guia fornece instruções detalhadas para fazer o deploy do backend no Render e do frontend/admin no Vercel.
 
-## Table of Contents
-1. [Prerequisites](#prerequisites)
-2. [Deploying the Backend](#deploying-the-backend)
-3. [Deploying the Frontend](#deploying-the-frontend)
-4. [Deploying to Render](#deploying-to-render)
-5. [Deploying to Vercel](#deploying-to-vercel)
-6. [Deploying to Heroku](#deploying-to-heroku)
-7. [Troubleshooting](#troubleshooting)
+## Estrutura do Projeto
 
-## Prerequisites
+```
+food_del/
+├── admin/         # Aplicação de administração (Vercel)
+├── backend/       # Servidor backend (Render)
+└── frontend/      # Aplicação frontend (Vercel)
+```
 
-Before deploying, make sure you have:
-- A MongoDB Atlas account (or another MongoDB provider)
-- A GitHub account
-- Node.js installed locally (for testing)
-- npm or yarn installed
+## Deploy do Backend no Render
 
-## Deploying the Backend
+### Passo 1: Criar uma conta no Render
 
-### Option 1: Deploy to Render
+1. Acesse [render.com](https://render.com)
+2. Crie uma conta ou faça login
 
-1. **Create a Render account**:
-   - Go to [Render](https://render.com/) and sign up
+### Passo 2: Criar um novo Web Service
 
-2. **Create a new Web Service**:
-   - Click "New" and select "Web Service"
-   - Connect your GitHub repository
+1. No dashboard do Render, clique em "New" e selecione "Web Service"
+2. Conecte seu repositório GitHub
 
-3. **Configure the service**:
-   - Name: `food-delivery-backend`
-   - Environment: `Node`
-   - Build Command: `cd backend && npm install`
-   - Start Command: `cd backend && npm start`
-   - Add environment variables:
-     - `MONGODB_URI`: Your MongoDB connection string
-     - `JWT_SECRET`: Your JWT secret
-     - `NODE_ENV`: `production`
-     - `PORT`: `10000` (or any port Render assigns)
+### Passo 3: Configurar o serviço
 
-4. **Deploy**:
-   - Click "Create Web Service"
+1. **Nome**: `food-delivery-backend`
+2. **Root Directory**: `backend`
+3. **Environment**: `Node`
+4. **Build Command**: `npm install`
+5. **Start Command**: `npm start`
 
-### Option 2: Deploy to Heroku
+### Passo 4: Configurar variáveis de ambiente
 
-1. **Install Heroku CLI**:
+Adicione as seguintes variáveis de ambiente:
+
+- `MONGODB_URI`: `mongodb+srv://cgrsobral:0WHeOvoR21sAIwJo@cluster0.tccjxvn.mongodb.net/food_delivery`
+- `JWT_SECRET`: `random#secret`
+- `NODE_ENV`: `production`
+- `FRONTEND_URL`: `https://frontend-five-amber-71.vercel.app`
+- `ADMIN_URL`: `https://admin-black-rho.vercel.app`
+
+### Passo 5: Deploy
+
+1. Clique em "Create Web Service"
+2. Aguarde o deploy ser concluído
+3. Anote a URL do seu backend (ex: `https://food-delivery-backend.onrender.com`)
+
+## Deploy do Frontend no Vercel
+
+### Passo 1: Criar uma conta no Vercel
+
+1. Acesse [vercel.com](https://vercel.com)
+2. Crie uma conta ou faça login
+
+### Passo 2: Importar o repositório
+
+1. Clique em "Add New" e selecione "Project"
+2. Conecte seu repositório GitHub
+3. Selecione o repositório do projeto
+
+### Passo 3: Configurar o projeto
+
+1. **Framework Preset**: `Vite`
+2. **Root Directory**: `frontend`
+3. **Build Command**: `npm run build`
+4. **Output Directory**: `dist`
+
+### Passo 4: Configurar variáveis de ambiente
+
+Adicione a seguinte variável de ambiente:
+
+- `VITE_API_URL`: URL do seu backend no Render (ex: `https://food-delivery-backend.onrender.com`)
+
+### Passo 5: Deploy
+
+1. Clique em "Deploy"
+2. Aguarde o deploy ser concluído
+3. Anote a URL do seu frontend (ex: `https://frontend-five-amber-71.vercel.app`)
+
+## Deploy do Admin no Vercel
+
+### Passo 1: Importar o repositório
+
+1. Clique em "Add New" e selecione "Project"
+2. Conecte seu repositório GitHub (se ainda não estiver conectado)
+3. Selecione o repositório do projeto
+
+### Passo 2: Configurar o projeto
+
+1. **Framework Preset**: `Vite` (ou o framework usado no admin)
+2. **Root Directory**: `admin`
+3. **Build Command**: `npm run build`
+4. **Output Directory**: `dist`
+
+### Passo 3: Configurar variáveis de ambiente
+
+Adicione a seguinte variável de ambiente:
+
+- `VITE_API_URL`: URL do seu backend no Render (ex: `https://food-delivery-backend.onrender.com`)
+
+### Passo 4: Deploy
+
+1. Clique em "Deploy"
+2. Aguarde o deploy ser concluído
+3. Anote a URL do seu admin (ex: `https://admin-black-rho.vercel.app`)
+
+## Deploy Automático com o Script
+
+Para facilitar o deploy, você pode usar o script `vercel-deploy.sh`:
+
+1. Abra o terminal
+2. Navegue até a pasta do projeto
+3. Execute o script:
    ```bash
-   npm install -g heroku
+   ./vercel-deploy.sh
    ```
+4. Siga as instruções na tela
 
-2. **Login to Heroku**:
-   ```bash
-   heroku login
-   ```
+## Verificação do Deploy
 
-3. **Create a Heroku app**:
-   ```bash
-   heroku create food-delivery-backend
-   ```
+Após o deploy, verifique se tudo está funcionando corretamente:
 
-4. **Set environment variables**:
-   ```bash
-   heroku config:set MONGODB_URI=your_mongodb_uri
-   heroku config:set JWT_SECRET=your_jwt_secret
-   heroku config:set NODE_ENV=production
-   ```
-
-5. **Deploy**:
-   ```bash
-   git push heroku main
-   ```
-
-## Deploying the Frontend
-
-### Option 1: Deploy to Vercel
-
-1. **Create a Vercel account**:
-   - Go to [Vercel](https://vercel.com/) and sign up
-
-2. **Import your repository**:
-   - Click "New Project" and select your GitHub repository
-
-3. **Configure the project**:
-   - Framework Preset: `Vite`
-   - Root Directory: `frontend`
-   - Build Command: `npm run build`
-   - Output Directory: `dist`
-   - Add environment variables:
-     - `VITE_API_URL`: Your backend API URL (e.g., `https://food-delivery-backend.onrender.com`)
-
-4. **Deploy**:
-   - Click "Deploy"
-
-### Option 2: Deploy to Netlify
-
-1. **Create a Netlify account**:
-   - Go to [Netlify](https://www.netlify.com/) and sign up
-
-2. **Import your repository**:
-   - Click "New site from Git" and select your GitHub repository
-
-3. **Configure the build settings**:
-   - Base directory: `frontend`
-   - Build command: `npm run build`
-   - Publish directory: `dist`
-   - Add environment variables:
-     - `VITE_API_URL`: Your backend API URL
-
-4. **Deploy**:
-   - Click "Deploy site"
-
-## Deploying to Render (Full Stack)
-
-Render also supports deploying both frontend and backend in a single repository:
-
-1. **Create a new Web Service**:
-   - Connect your GitHub repository
-
-2. **Configure the service**:
-   - Name: `food-delivery-app`
-   - Environment: `Node`
-   - Build Command: `npm install && cd frontend && npm install && npm run build`
-   - Start Command: `cd backend && npm start`
-   - Add environment variables as needed
-
-3. **Deploy**:
-   - Click "Create Web Service"
+1. Acesse o frontend: [https://frontend-five-amber-71.vercel.app/](https://frontend-five-amber-71.vercel.app/)
+2. Acesse o admin: [https://admin-black-rho.vercel.app/](https://admin-black-rho.vercel.app/)
+3. Verifique se as aplicações conseguem se comunicar com o backend
+4. Verifique se não há erros CORS no console do navegador
 
 ## Troubleshooting
 
-### Common Issues
+### Problemas com CORS
 
-1. **CORS Errors**:
-   - Make sure your backend CORS configuration includes your frontend domain
-   - Update the CORS configuration in `server.js`:
-     ```javascript
-     app.use(cors({
-       origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-       credentials: true
-     }));
-     ```
+Se você encontrar problemas com CORS:
 
-2. **API Connection Issues**:
-   - Ensure your frontend is using the correct API URL
-   - Check that environment variables are properly set
+1. Verifique se as URLs do frontend e admin estão corretamente configuradas no backend
+2. Verifique se a variável `VITE_API_URL` está configurada corretamente no frontend e admin
+3. Verifique os logs do backend no Render para identificar problemas
 
-3. **MongoDB Connection Issues**:
-   - Verify your MongoDB connection string
-   - Check that your IP address is whitelisted in MongoDB Atlas
+### Problemas de Conexão com o MongoDB
 
-4. **Build Failures**:
-   - Check the build logs for specific errors
-   - Ensure all dependencies are properly listed in package.json
+Se você encontrar problemas de conexão com o MongoDB:
 
-### Getting Help
+1. Verifique se a string de conexão está correta
+2. Verifique se o IP do Render está na lista de IPs permitidos no MongoDB Atlas
+3. Verifique os logs do backend no Render para identificar problemas
 
-If you encounter issues not covered in this guide:
-- Check the documentation for your hosting provider
-- Search for similar issues on Stack Overflow
-- Reach out to the support team of your hosting provider 
+### Problemas de Build
+
+Se você encontrar problemas de build:
+
+1. Verifique os logs de build no Vercel
+2. Verifique se todas as dependências estão instaladas corretamente
+3. Verifique se o Node.js está na versão correta 

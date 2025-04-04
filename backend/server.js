@@ -19,7 +19,23 @@ const port = process.env.PORT || 4000
 
 //middleware 
 app.use(express.json())
-app.use(cors())
+
+// Configuração CORS personalizada
+app.use(cors({
+  origin: [
+    // URLs do Admin
+    'https://admin-black-rho.vercel.app',
+    'https://admin-ak4in7mkm-cassi35s-projects.vercel.app',
+    
+    // URLs do Frontend
+    'https://frontend-five-amber-71.vercel.app',
+    'https://frontend-8cecrn3s5-cassi35s-projects.vercel.app',
+    
+    // Para desenvolvimento local
+    'http://localhost:5173'
+  ],
+  credentials: true
+}));
 
 //db connection
 connectDB()
