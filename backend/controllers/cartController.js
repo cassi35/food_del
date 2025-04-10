@@ -69,7 +69,6 @@ export const removeFromCart = async (req, res) => {
     if (!userId) {
       return res.status(401).json({success: false, message: "Invalid token"});
     }
-    
     // Find user and update cart
     const userData = await UserModel.findById(userId);
     if (!userData) {
